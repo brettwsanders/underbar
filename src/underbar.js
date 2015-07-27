@@ -236,7 +236,14 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
-
+    var args = Array.prototype.slice.call(arguments);
+    var results = args.shift();
+    _.each(args, function(item) {
+        _.each(item, function(value, key) {
+            results[key] = value;
+        });
+    });
+    return results;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
@@ -308,16 +315,15 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
-    var copy = Array.prototype.slice.call(array);
+    var copy = array.slice();
     var results = [];
     for (var i = 0; i < array.length; i++) {
         var index = Math.floor(Math.random() * copy.length);
-        var value = copy.splice(index, 1);
-        results.push(value[0]);
+        results = results.concat(copy.splice(index, 1));
     }
     if (results === array) {
-      return shuffle(array);
-    }
+      return _.shuffle(array);
+    };
     return results;
   };
 
